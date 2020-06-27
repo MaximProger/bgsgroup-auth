@@ -16,9 +16,20 @@ router.use((req, res, next) => {
 
 // Add POST - /api/login
 router.post('/login', (req, res) => {
-  if (req.body.email === 'demo' && req.body.password === 'demo') {
-    req.session.authUser = { email: 'demo' }
-    return res.json({ email: 'demo' })
+  if (
+    req.body.email === 'info@bgs-group.eu' &&
+    req.body.password === '123456'
+  ) {
+    req.session.authUser = {
+      email: req.body.email,
+      name: req.body.name,
+      profession: req.body.profession
+    }
+    return res.json({
+      email: req.body.email,
+      name: req.body.name,
+      profession: req.body.profession
+    })
   }
   res.status(401).json({ message: 'Bad credentials' })
 })

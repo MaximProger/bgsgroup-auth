@@ -17,13 +17,18 @@ export const actions = {
       commit('SET_USER', req.session.authUser)
     }
   },
-  async login({ commit }, { email, password }) {
+  async login({ commit }, { email, password, name, profession }) {
     try {
-      const { data } = await axios.post('/api/login', { email, password })
+      const { data } = await axios.post('/api/login', {
+        email,
+        password,
+        name,
+        profession
+      })
       commit('SET_USER', data)
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        throw new Error('Bad credentials')
+        throw new Error('Введенные данные не подходят')
       }
       throw error
     }
@@ -31,6 +36,6 @@ export const actions = {
 
   async logout({ commit }) {
     await axios.post('/api/logout')
-    commit('SET_USER', req.session.authUser)
+    commit('SET_USER', null)
   }
 }
