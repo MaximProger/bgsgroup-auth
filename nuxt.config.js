@@ -100,6 +100,6 @@ export default {
   },
 
   router: {
-    base: '/bgsgroup-auth/'
+    base: '/bgsgroup-auth/dist/'
   }
 }
