@@ -97,9 +97,5 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
-  },
-
-  router: {
-    base: '/bgsgroup-auth/dist/'
   }
 }
