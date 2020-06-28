@@ -14,24 +14,33 @@
               label="Имя"
               name="name"
               type="text"
-              v-model="formName"
+              v-model.trim="formName"
+              :error-messages="nameErrors"
+              @input="$v.formName.$touch()"
+              @blur="$v.formName.$touch()"
               color="red lighten-1"
+              required
             ></v-text-field>
 
             <v-text-field
               label="Email"
               name="email"
               type="email"
-              v-model="formEmail"
+              v-model.trim="formEmail"
               color="red lighten-1"
+              required
             ></v-text-field>
 
             <v-text-field
               label="Профессия"
               name="profession"
               type="text"
-              v-model="formProfession"
+              v-model.trim="formProfession"
+              :error-messages="professionErrors"
+              @input="$v.formProfession.$touch()"
+              @blur="$v.formProfession.$touch()"
               color="red lighten-1"
+              required
             ></v-text-field>
 
             <v-text-field
@@ -39,7 +48,18 @@
               label="Пароль"
               name="password"
               type="password"
-              v-model="formPassword"
+              v-model.trim="formPassword"
+              color="red lighten-1"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              id="avatar"
+              label="Аватар"
+              name="avatar"
+              ref="file"
+              type="file"
+              v-model="formAvatar"
               color="red lighten-1"
             ></v-text-field>
             <v-card-actions>
@@ -56,29 +76,58 @@
 </template>
 
 <script>
+import { validationMixin } from 'vuelidate'
+import { required } from 'vuelidate/lib/validators'
 export default {
-  data() {
-    return {
-      formError: null,
-      formEmail: '',
-      formName: '',
-      formProfession: '',
-      formPassword: ''
+  data: () => ({
+    formError: null,
+    formEmail: '',
+    formName: '',
+    formProfession: '',
+    formPassword: '',
+    formAvatar: ''
+  }),
+  mixins: [validationMixin],
+  validations: {
+    formName: { required },
+    formProfession: { required }
+  },
+  computed: {
+    nameErrors() {
+      const errors = []
+      if (!this.$v.formName.$dirty) return errors
+      !this.$v.formName.required && errors.push('Введите имя')
+      return errors
+    },
+    professionErrors() {
+      const errors = []
+      if (!this.$v.formProfession.$dirty) return errors
+      !this.$v.formProfession.required &&
+        errors.push('Поле "Профессия" не должно быть пустым')
+      return errors
     }
   },
   methods: {
     async login() {
+      if (this.$v.$invalid) {
+        this.$v.$touch()
+        return
+      }
+
       try {
         await this.$store.dispatch('login', {
           name: this.formName,
           email: this.formEmail,
           profession: this.formProfession,
-          password: this.formPassword
+          password: this.formPassword,
+          avatar: this.formAvatar
         })
+        this.$v.$reset()
         this.formName = ''
         this.formEmail = ''
         this.formProfession = ''
         this.formPassword = ''
+        this.formAvatar = ''
         this.formError = null
         this.$router.push('/profile')
       } catch (e) {
@@ -89,8 +138,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.v-btn__content {
-  color: white !important;
-}
-</style>
+<style lang="scss" scoped></style>

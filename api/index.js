@@ -23,12 +23,14 @@ router.post('/login', (req, res) => {
     req.session.authUser = {
       email: req.body.email,
       name: req.body.name,
-      profession: req.body.profession
+      profession: req.body.profession,
+      avatar: req.body.avatar
     }
     return res.json({
       email: req.body.email,
       name: req.body.name,
-      profession: req.body.profession
+      profession: req.body.profession,
+      avatar: req.body.avatar
     })
   }
   res.status(401).json({ message: 'Bad credentials' })

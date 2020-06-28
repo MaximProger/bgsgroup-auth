@@ -17,13 +17,14 @@ export const actions = {
       commit('SET_USER', req.session.authUser)
     }
   },
-  async login({ commit }, { email, password, name, profession }) {
+  async login({ commit }, { email, password, name, profession, avatar }) {
     try {
       const { data } = await axios.post('/api/login', {
         email,
         password,
         name,
-        profession
+        profession,
+        avatar
       })
       commit('SET_USER', data)
     } catch (error) {
